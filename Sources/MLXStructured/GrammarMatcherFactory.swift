@@ -28,13 +28,11 @@ public extension GrammarMaskedLogitProcessor {
         )
         
         let vocabSize = modelConfig?.vocabSize.integer() ?? 0
-        let vocabDict = tokenizerData.model.vocab.dictionary(or: [:])                                        
-        let maxIndex = vocabDict.values.compactMap { $0.integer() }.max() ?? (vocabSize - 1)                 
-        var vocab = Array(repeating: "", count: max(vocabSize, maxIndex + 1))                                
-                                                                                                                   
-        for (key, value) in vocabDict {  
-            if let index = value.integer() {
-                vocab[index] = key.string
+        var vocab = Array(repeating: "", count: vocabSize)                                                                                                                    
+        
+        for (key, value) in tokenizerData.model.vocab.dictionary(or: [:]) {                           
+            if let index = value.integer(), vocab.indices.contains(index) {
+                 vocab[index] = key.string
             }
         }
         
